@@ -33,7 +33,7 @@ def test_get(client):
 
     res = client.simulate_get('/crashid')
     assert res.status_code == 200
-    assert res.content == b'2017-03-06 16:30:00: 00000019-c413-4ada-a50b-4eab40170120'
+    assert res.content == b'Crash ids: 1\n2017-03-06 16:30:00: 00000019-c413-4ada-a50b-4eab40170120'
 
     # Post a second and get both
     res = client.simulate_post('/crashid', query_string='crashid=11111111-c413-4ada-a50b-4eab40170120')
@@ -44,6 +44,7 @@ def test_get(client):
     assert res.status_code == 200
     assert (
         res.content ==
+        b'Crash ids: 2\n'
         b'2017-03-06 16:30:00: 00000019-c413-4ada-a50b-4eab40170120\n'
         b'2017-03-06 16:30:00: 11111111-c413-4ada-a50b-4eab40170120'
     )

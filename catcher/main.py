@@ -51,9 +51,15 @@ class CrashIDResource:
 
     def on_get(self, req, resp):
         resp.status = falcon.HTTP_200
-        resp.body = '\n'.join(self.crashid_log)
+        resp.body = (
+            ('Crash ids: %d\n' % len(self.crashid_log)) +
+            '\n'.join(self.crashid_log)
+        )
+        resp.content_type = 'text/plain'
 
     def on_post(self, req, resp):
+        resp.content_type = 'text/plain'
+
         crashid = req.params['crashid']
         if crashid.startswith(PREFIX):
             crashid = crashid[len(PREFIX):]
@@ -79,10 +85,18 @@ class CrashIDResource:
             resp.body = 'Bad crashid: %s' % crashid
 
 
+class IndexResource:
+    def on_get(self, req, resp):
+        resp.status = falcon.HTTP_200
+        resp.content_type = 'text/html'
+        resp.body = '<html><body><p>Hi! <a href="/crashid">To crashes</a></p></body></html>'
+
+
 def get_app():
     setup_logging()
 
     app = falcon.API()
+    app.add_route('/', IndexResource())
     app.add_route('/crashid', CrashIDResource())
     return app
 
